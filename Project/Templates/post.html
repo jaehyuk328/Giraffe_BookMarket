@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 판매 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #a8dfc1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 28px;
+            color: #2a9d8f;
+            margin-bottom: 20px;
+        }
+        .product {
+            margin-bottom: 30px;
+        }
+        .product img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 12px;
+        }
+        .product h2 {
+            font-size: 22px;
+            color: #264653;
+            margin: 10px 0;
+        }
+        .product p {
+            font-size: 16px;
+            color: #555;
+            margin: 5px 0;
+        }
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #e76f51;
+            margin: 10px 0;
+        }
+        .buy-btn, .back-btn {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #2a9d8f;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+        .buy-btn:hover, .back-btn:hover {
+            background-color: #21867a;
+        }
+        .back-btn {
+            margin-top: 15px;
+            background-color: #e76f51;
+        }
+        .back-btn:hover {
+            background-color: #d4573f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>상품 판매</h1>
+        <div class="product">
+            <img src="static/9791159714665.jpg" alt="상품 이미지">
+            <h2>OO과 전공책 판매</h2>
+            <p>필기 O, 깨끗함</p>
+            <p class="price">₩30,000</p>
+            <a href="product1.html" class="buy-btn">구매하기</a>
+        </div>
+        <a href="market.html" class="back-btn">목록으로 돌아가기</a>
+    </div>
+</body>
+</html>

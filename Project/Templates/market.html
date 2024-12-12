@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>판매글 목록</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef9f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2a9d8f;
+            margin-bottom: 30px;
+        }
+        .actions {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .actions a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #2a9d8f;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .actions a:hover {
+            background-color: #21867a;
+        }
+        .post {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            background-color: #ffffff;
+            transition: transform 0.2s;
+        }
+        .post:hover {
+            transform: scale(1.02);
+        }
+        .post .details {
+            flex: 1;
+        }
+        .post .details h2 {
+            font-size: 18px;
+            color: #264653;
+            margin: 0 0 10px 0;
+        }
+        .post .details p {
+            font-size: 14px;
+            color: #555;
+            margin: 0;
+        }
+        .post .actions {
+            margin-left: 20px;
+        }
+        .post .actions a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #2a9d8f;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .post .actions a:hover {
+            background-color: #21867a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>판매글 목록</h1>
+        <div class="actions">
+            <a href="/create_post_page">Create Post</a>
+        </div>
+        {% if posts %}
+            {% for post in posts %}
+                <div class="post">
+                    <div class="details">
+                        <h2>{{ post.title }}</h2>
+                        <p>판매자: {{ post.user_id }}</p>
+                        <p>책 제목: {{ post.content1 }}</p>
+                        <p>가격: {{ post.content2 }} 원</p>
+                        <p>책 상태: {{ post.content3 }}</p>
+                        <p>장소: {{ post.content4 }}</p>
+                    </div>
+                    <div class="actions">
+                        <a href="{{ url_for('post_detail', post_id=post.id) }}">View Details</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>현재 판매 중인 글이 없습니다.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
+

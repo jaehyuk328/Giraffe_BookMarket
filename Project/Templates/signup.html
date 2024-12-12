@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #64D9B5, #AEDC81);
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .signup-section {
+            width: 100%;
+            max-width: 400px; /* 컨테이너 너비 제한 */
+            text-align: left;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            color: #4CAF50;
+            text-align: center; /* 제목을 중앙 정렬 */
+        }
+        input {
+            width: calc(100% - 20px); /* 패딩에 맞춰 필드 너비 조정 */
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* 패딩과 너비 포함 계산 */
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        small {
+            display: block;
+            margin-top: 5px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-section">
+        <h1>Sign Up</h1>
+        <form action="/signup" method="POST">
+            <input type="text" name="username" placeholder="User ID" required>
+            <input type="password" name="password" placeholder="Password (8+ characters, letters & numbers)" required>
+            <small>Password must contain at least one letter and one number.</small>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <input type="text" name="major" placeholder="Major" required>
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 작성</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #a8dfc1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            font-size: 28px;
+            color: #2a9d8f;
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 16px;
+            color: #264653;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+            text-align: left;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .button-group button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #f8f8f8;
+            font-size: 16px;
+        }
+        .button-group button.selected {
+            background-color: #2a9d8f;
+            color: white;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #2a9d8f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: background-color 0.3s;
+        }
+        button[type="submit"]:hover {
+            background-color: #21867a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>게시글 작성</h1>
+        <form action="/create_post" method="POST">
+            <!-- User ID -->
+            <label for="user_id">사용자 ID</label>
+            <input type="text" id="user_id" name="user_id" placeholder="사용자 ID를 입력하세요" required>
+
+            <!-- Title -->
+            <label for="title">게시글 제목</label>
+            <input type="text" id="title" name="title" placeholder="게시글 제목을 입력하세요" required>
+
+            <!-- Book Title (Content1) -->
+            <label for="content1">책 제목</label>
+            <input type="text" id="content1" name="content1" placeholder="책 제목을 입력하세요" required>
+
+            <!-- Price (Content2) -->
+            <label for="content2">가격</label>
+            <input type="number" id="content2" name="content2" placeholder="가격을 입력하세요 (₩)" required>
+
+            <!-- Book Condition (Content3) -->
+            <label>책 상태</label>
+            <div class="button-group">
+                <button type="button" class="condition-button" data-value="나쁨">나쁨</button>
+                <button type="button" class="condition-button" data-value="보통">보통</button>
+                <button type="button" class="condition-button" data-value="좋음">좋음</button>
+            </div>
+            <input type="hidden" id="content3" name="content3" required>
+
+            <!-- Location (Content4) -->
+            <label for="content4">장소</label>
+            <input type="text" id="content4" name="content4" placeholder="위치를 입력하세요" required>
+
+            <!-- Submit -->
+            <button type="submit">게시글 저장</button>
+        </form>
+    </div>
+
+    <script>
+        // JavaScript for Book Condition Buttons
+        const buttons = document.querySelectorAll('.condition-button');
+        const hiddenInput = document.getElementById('content3');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove 'selected' class from all buttons
+                buttons.forEach(btn => btn.classList.remove('selected'));
+                // Add 'selected' class to the clicked button
+                button.classList.add('selected');
+                // Set the hidden input value
+                hiddenInput.value = button.dataset.value;
+            });
+        });
+    </script>
+</body>
+</html>
