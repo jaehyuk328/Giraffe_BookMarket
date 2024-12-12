@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>상품 판매 페이지</title>
+    <title>상품 상세 페이지</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,15 +22,16 @@
             background-color: white;
             border-radius: 16px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
         }
         h1 {
             font-size: 28px;
             color: #2a9d8f;
             margin-bottom: 20px;
+            text-align: center;
         }
         .product {
             margin-bottom: 30px;
+            text-align: center;
         }
         .product img {
             width: 100%;
@@ -55,22 +56,31 @@
             color: #e76f51;
             margin: 10px 0;
         }
-        .buy-btn, .back-btn {
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .actions a {
             display: inline-block;
-            padding: 12px 20px;
-            background-color: #2a9d8f;
-            color: white;
-            text-decoration: none;
+            width: 48%;
+            padding: 12px 0;
+            text-align: center;
             font-size: 16px;
+            text-decoration: none;
+            color: white;
             border-radius: 8px;
+        }
+        .buy-btn {
+            background-color: #2a9d8f;
             transition: background-color 0.3s;
         }
-        .buy-btn:hover, .back-btn:hover {
+        .buy-btn:hover {
             background-color: #21867a;
         }
         .back-btn {
-            margin-top: 15px;
             background-color: #e76f51;
+            transition: background-color 0.3s;
         }
         .back-btn:hover {
             background-color: #d4573f;
@@ -79,15 +89,19 @@
 </head>
 <body>
     <div class="container">
-        <h1>상품 판매</h1>
+        <h1>상품 상세</h1>
         <div class="product">
-            <img src="static/9791159714665.jpg" alt="상품 이미지">
-            <h2>OO과 전공책 판매</h2>
-            <p>필기 O, 깨끗함</p>
-            <p class="price">₩30,000</p>
-            <a href="product1.html" class="buy-btn">구매하기</a>
+            <h2>{{ post.title }}</h2>
+            <p>판매자: {{ post.user_id }}</p>
+            <p>책 제목: {{ post.content1 }}</p>
+            <p>책 상태: {{ post.content3 }}</p>
+            <p>위치: {{ post.content4 }}</p>
+            <p class="price">₩{{ post.content2 }}</p>
         </div>
-        <a href="market.html" class="back-btn">목록으로 돌아가기</a>
+        <div class="actions">
+            <a href="/buy/{{ post.id }}" class="buy-btn">구매하기</a>
+            <a href="/posts" class="back-btn">목록으로 돌아가기</a>
+        </div>
     </div>
 </body>
 </html>

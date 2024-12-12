@@ -7,60 +7,60 @@
     <style>
         body {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
-            /* 배경을 부드러운 그라데이션으로 설정 */
-            background: linear-gradient(135deg, #a8e063, #56ab2f);
+            background: linear-gradient(135deg, #64D9B5, #AEDC81); /* home.html과 동일한 배경 그라데이션 */
         }
-        .chat-container {
+        .banner {
             width: 500px;
-            height: 700px;
-            background-color: #d9f99d; /* 메시지 박스 배경 흰색 */
-            border-radius: 20px; /* 둥근 테두리 */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* 부드러운 그림자 */
-            display: flex;
-            flex-direction: column;
+            text-align: center;
             padding: 20px;
-            overflow: hidden;
+            background: #d3d3d3; /* Light gray banner */
+            border-radius: 20px 20px 0 0;
+            font-size: 20px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         .chat-box {
-            flex: 1;
+            width: 500px;
+            height: 700px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px; /* 메시지 간격 */
-            overflow-y: auto;
+            gap: 15px;
             padding: 20px;
-            /* 초록색 그라데이션 배경 */
-            background: linear-gradient(135deg, #a4d66d, #6fbb5d);
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 5px solid #3b7c27
+            background: #4b4b4b; /* Dark gray background */
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         .message {
             padding: 10px 15px;
             border-radius: 15px;
-            max-width: 75%; /* 메시지 박스의 최대 너비 */
-            word-wrap: break-word; /* 긴 텍스트 줄바꿈 처리 */
+            max-width: 75%;
+            word-wrap: break-word;
             font-size: 16px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 메시지 그림자 효과 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .buyer-message {
-            background-color: #4CAF50; /* 구매자 메시지 색상 */
+            background-color: #4CAF50;
             color: white;
             align-self: flex-end;
         }
         .seller-message {
-            background-color: #2196F3; /* 판매자 메시지 색상 */
+            background-color: #2196F3;
             color: white;
             align-self: flex-start;
         }
         .button-container {
+            width: 500px;
             display: flex;
             gap: 10px;
-            justify-content: center; /* 버튼 가운데 정렬 */
+            justify-content: center;
+            margin-top: 20px; /* Added gap between chat box and buttons */
         }
         .button-container button {
             padding: 10px 20px;
@@ -72,7 +72,7 @@
             transition: background-color 0.3s, transform 0.2s;
         }
         .button-container button:hover {
-            transform: scale(1.1); /* 버튼에 호버 애니메이션 */
+            transform: scale(1.1);
         }
         .yes-button {
             background-color: #4CAF50;
@@ -89,100 +89,157 @@
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-box" id="chat-box">
-            <!-- 채팅 메시지가 여기에 추가됩니다 -->
-        </div>
-        <div class="button-container" id="button-container">
-            <!-- 버튼을 JavaScript에서 추가/삭제할 예정 -->
-        </div>
-    </div>
+    <div class="banner">CHAT</div>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="button-container" id="button-container"></div>
 
     <script>
         let isBuyerTurn = true; // 구매자 차례인지 판매자 차례인지 확인
+        let isChatClosed = false; // 채팅이 종료된 상태를 추적
+        const ws = new WebSocket('ws://10.0.2.15:8888'); // 적절한 IP로 변경
 
-        function sendResponse(response) {
+        ws.onopen = () => {
+            console.log("WebSocket 연결 성공!");
+            const role = new URLSearchParams(window.location.search).get("role");
+            if (role && role === "buyer") {
+                ws.send('buyer'); // 구매자 역할로 설정
+                console.log("구매자 역할로 설정됨");
+            } else {
+                ws.send('seller'); // 판매자 역할로 설정 (기본값)
+                console.log("판매자 역할로 설정됨");
+            }
+        };
+
+        ws.onmessage = (event) => {
+            if (isChatClosed) return;
             const chatBox = document.getElementById('chat-box');
             const responseMessage = document.createElement('div');
-            
-            // 구매자와 판매자의 메시지를 번갈아가며 표시
-            if (isBuyerTurn) {
-                responseMessage.textContent = "구매자: " + getBuyerResponse(response);
-                responseMessage.classList.add('buyer-message', 'message');
-            } else {
-                responseMessage.textContent = "판매자: " + getSellerResponse(response);
-                responseMessage.classList.add('seller-message', 'message');
-            }
-
+            responseMessage.textContent = event.data;
+            responseMessage.classList.add('message');
             chatBox.appendChild(responseMessage);
-            chatBox.scrollTop = chatBox.scrollHeight; // 스크롤을 가장 아래로 이동
+            chatBox.scrollTop = chatBox.scrollHeight;
+        };
 
-            isBuyerTurn = !isBuyerTurn; // 차례 변경
-            updateButtons(); // 버튼 업데이트
-        }
-
+        let negoPrice = null;
         function getBuyerResponse(response) {
-            // 구매자 응답 처리
             if (response === 'Yes') {
                 return "구매 가능할까요?";
             } else if (response === 'No') {
-                alert("채팅을 종료합니다."); // No를 선택하면 채팅 종료
-                location.href = "store_v2.html";
-            } else if (response === '네고') {
-                return "<가격>원으로 네고 가능할까요?";
+                return "구매를 포기하겠습니다.";
+            } else if (response === 'Discount') {
+                const price = prompt("네고하고 싶은 가격을 입력하세요:");
+                if (price && !isNaN(price)) {
+                    negoPrice = price;
+                    return `${price}원으로 네고 가능할까요?`;
+                } else {
+                    return "유효한 금액을 입력해주세요.";
+                }
             }
             return "";
         }
 
         function getSellerResponse(response) {
-            // 판매자 응답 처리
             if (response === 'Yes') {
-                setTimeout(() => {
-                    alert("거래가 확정되었습니다."); // 거래 확정 알림
-                    location.href = "store_v2.html";
-                }, 2000);
-                return "네! 가능합니다.";
+                if (negoPrice !== null) {
+                    return `${negoPrice}원에 판매하겠습니다!`;
+                } else {
+                    return "판매 가능합니다!";
+                }
             } else if (response === 'No') {
-                setTimeout(() => {
-                    alert("채팅이 종료됩니다."); // 판매불가 알림 후 종료
-                    location.href = "store_v2.html";
-                }, 2000);
-                return "지금은 어려울 것 같습니다. 죄송합니다.";
+                return "판매 불가능합니다.";
+            } else if (response === 'Discount') {
+                return `${negoPrice || "<가격>"}원에 판매하겠습니다!`;
             }
+            return "";
+        }
+
+        function closeChat() {
+            alert("채팅을 종료합니다.");
+            location.href = '/posts'; // post.html로 리다이렉트
+        }
+
+        function sendResponse(response) {
+            if (isChatClosed) return;
+
+            const chatBox = document.getElementById('chat-box');
+            const responseMessage = document.createElement('div');
+
+            if (isBuyerTurn) {
+                if (response === 'No') {
+                    isChatClosed = true;
+                    closeChat();
+                    return;
+                }
+
+                const message = getBuyerResponse(response);
+                responseMessage.textContent = message ? `구매자: ${message}` : "구매자: 메시지가 없습니다.";
+                responseMessage.classList.add('buyer-message', 'message');
+            } else {
+                const message = getSellerResponse(response);
+                responseMessage.textContent = message ? `판매자: ${message}` : "판매자: 메시지가 없습니다.";
+                responseMessage.classList.add('seller-message', 'message');
+
+                if (response === 'Yes') {
+                    const successMessage = document.createElement('div');
+                    successMessage.textContent = "판매자: 거래가 성립되었습니다.";
+                    successMessage.classList.add('seller-message', 'message');
+                    chatBox.appendChild(successMessage);
+                } else if (response === 'No') {
+                    const failMessage = document.createElement('div');
+                    failMessage.textContent = "판매자: 거래가 불성립되었습니다.";
+                    failMessage.classList.add('seller-message', 'message');
+                    chatBox.appendChild(failMessage);
+                }
+            }
+
+            chatBox.appendChild(responseMessage);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (!isBuyerTurn && (response === 'Yes' || response === 'No')) {
+                setTimeout(() => {
+                    isChatClosed = true;
+                    closeChat();
+                }, 2000);
+            }
+
+            isBuyerTurn = !isBuyerTurn;
+            updateButtons();
+
+            ws.send(response);
         }
 
         function updateButtons() {
             const buttonContainer = document.getElementById('button-container');
-            buttonContainer.innerHTML = ''; // 기존 버튼 지우기
+            buttonContainer.innerHTML = '';
 
             if (isBuyerTurn) {
                 const yesButton = document.createElement('button');
-                yesButton.classList.add('yes-button');
                 yesButton.textContent = 'Yes';
+                yesButton.classList.add('yes-button');
                 yesButton.onclick = () => sendResponse('Yes');
 
                 const noButton = document.createElement('button');
-                noButton.classList.add('no-button');
                 noButton.textContent = 'No';
+                noButton.classList.add('no-button');
                 noButton.onclick = () => sendResponse('No');
 
                 const negoButton = document.createElement('button');
+                negoButton.textContent = 'Discount';
                 negoButton.classList.add('nego-button');
-                negoButton.textContent = '네고';
-                negoButton.onclick = () => sendResponse('네고');
+                negoButton.onclick = () => sendResponse('Discount');
 
                 buttonContainer.appendChild(yesButton);
                 buttonContainer.appendChild(noButton);
                 buttonContainer.appendChild(negoButton);
             } else {
                 const yesButton = document.createElement('button');
-                yesButton.classList.add('yes-button');
                 yesButton.textContent = 'Yes';
+                yesButton.classList.add('yes-button');
                 yesButton.onclick = () => sendResponse('Yes');
 
                 const noButton = document.createElement('button');
-                noButton.classList.add('no-button');
                 noButton.textContent = 'No';
+                noButton.classList.add('no-button');
                 noButton.onclick = () => sendResponse('No');
 
                 buttonContainer.appendChild(yesButton);
@@ -194,3 +251,4 @@
     </script>
 </body>
 </html>
+

@@ -13,12 +13,35 @@ USER_DATA_FILE = os.path.expanduser("~/Project/web_data/users/users.json")
 POST_DATA_FILE = os.path.expanduser("~/Project/web_data/posts/posts.json")
 CHAT_DATA_FILE = os.path.expanduser("~/Project/web_data/chats/chats.json")
 
+##################################################################
+
 def is_port_in_use(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(('localhost', port)) == 0
 
+def terminate_process_on_port(port):
+    """특정 포트를 사용하는 프로세스를 종료합니다."""
+    try:
+        result = subprocess.check_output(f"lsof -ti:{port}", shell=True).decode().strip()
+        if result:
+            subprocess.check_call(f"kill -9 {result}", shell=True)
+            print(f"{port} 포트를 사용하는 프로세스를 종료했습니다.")
+    except subprocess.CalledProcessError:
+        print(f"{port} 포트를 사용하는 프로세스가 없습니다.")
+
 def run_server():
-    subprocess.Popen(['python3', 'server.py'], cwd=os.getcwd())
+    """server.py WebSocket 서버를 실행합니다."""
+    if is_port_in_use(8888):
+        print("8888 포트가 이미 사용 중입니다. 프로세스를 종료합니다...")
+        terminate_process_on_port(8888)
+
+    try:
+        process = subprocess.Popen(['python3', 'server.py'], cwd=os.getcwd())
+        print(f"server.py가 PID {process.pid}로 시작되었습니다.")
+    except Exception as e:
+        print(f"server.py를 시작하지 못했습니다: {e}")
+
+##################################################################
 
 def load_user_data():
     try:
@@ -41,10 +64,6 @@ def load_chat_data():
 def save_chat_data(data):
     with open(CHAT_DATA_FILE, 'w') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
-
-def run_server():                      # server.py를 실행하는 함수
-    os.system('python server.py')
-
 
 @app.route('/')
 def home():
@@ -154,6 +173,15 @@ def create_post():
     flash("Post created successfully!")
     return redirect(url_for('get_posts'))
 
+@app.route('/posts', methods=['GET'])
+def posts():
+    if os.path.exists(POST_DATA_FILE):
+        with open(POST_DATA_FILE, 'r') as f:
+            posts = json.load(f)
+    else:
+        posts = []
+
+    return render_template('market.html', posts=posts)
 
 @app.route('/post/<int:post_id>', methods=['GET'])
 def post_detail(post_id):
@@ -170,7 +198,22 @@ def post_detail(post_id):
 
     return render_template('post.html', post=post)
 
-################################################################
+@app.route('/buy/<int:post_id>', methods=['GET'])
+def buy_post(post_id):
+    # post_id가 유효한지 확인
+    if os.path.exists(POST_DATA_FILE):
+        with open(POST_DATA_FILE, 'r') as f:
+            posts = json.load(f)
+    else:
+        posts = []
+
+    post = next((p for p in posts if p['id'] == post_id), None)
+    if not post:
+        flash("게시글을 찾을 수 없습니다!")
+        return redirect(url_for('get_posts'))
+
+    # 해당 post_id를 사용하여 채팅 페이지로 리다이렉트
+    return redirect(url_for('chat', post_id=post_id))
 
 @app.route('/chat/post/<int:post_id>', methods=['GET'])
 def chat(post_id):
@@ -226,16 +269,15 @@ def create_room():
     room_id = f"{user_id}_{post_id}"
     return redirect(url_for('chat_room', room_id=room_id))
 
+#####################################################################################
 
-################################################################
+if is_port_in_use(5000):
+        print("5000번 포트가 이미 사용 중입니다. 프로세스를 종료합니다...")
+        terminate_process_on_port(5000)
 
+#####################################################################################
 
 if __name__ == "__main__":
-
-    # Check if port is in use
-    if is_port_in_use(8022):
-        print("Port 8022 is already in use. Please free the port or use another port.")
-        exit(1)
 
     # Ensure the directories exist
     os.makedirs(os.path.dirname(USER_DATA_FILE), exist_ok=True)
@@ -258,6 +300,7 @@ if __name__ == "__main__":
     server_process = Process(target=run_server)
     server_process.start()
 
+    # Run Flask app
     app.run(host="0.0.0.0", port=5000, debug=True)
 
     server_process.join()
