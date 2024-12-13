@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #a8dfc1;
+            background: linear-gradient(135deg, #64D9B5, #AEDC81);
             margin: 0;
             padding: 0;
             display: flex;
@@ -17,47 +17,47 @@
         }
         .container {
             width: 100%;
-            max-width: 600px;
-            padding: 20px;
+            max-width: 500px; /* 기존 600px에서 줄임 */
+            padding: 16px; /* 기존 20px에서 줄임 */
             background-color: white;
-            border-radius: 16px;
+            border-radius: 12px; /* 기존 16px에서 줄임 */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
         h1 {
-            font-size: 28px;
+            font-size: 24px; /* 기존 28px에서 줄임 */
             color: #2a9d8f;
-            margin-bottom: 20px;
+            margin-bottom: 16px; /* 기존 20px에서 줄임 */
         }
         label {
-            font-size: 16px;
+            font-size: 14px; /* 기존 16px에서 줄임 */
             color: #264653;
             font-weight: bold;
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px; /* 기존 8px에서 줄임 */
             text-align: left;
         }
-        input[type="text"], input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 16px;
+        input[type="text"], input[type="number"], input[type="file"] {
+            width: calc(100% - 20px);
+            padding: 8px; /* 기존 10px에서 줄임 */
+            margin-bottom: 12px; /* 기존 16px에서 줄임 */
             border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px; /* 기존 8px에서 줄임 */
+            font-size: 14px; /* 기존 16px에서 줄임 */
         }
         .button-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 8px; /* 기존 10px에서 줄임 */
+            margin-bottom: 12px; /* 기존 16px에서 줄임 */
         }
         .button-group button {
             flex: 1;
-            padding: 12px;
+            padding: 10px; /* 기존 12px에서 줄임 */
             border: 1px solid #ccc;
-            border-radius: 8px;
+            border-radius: 6px; /* 기존 8px에서 줄임 */
             cursor: pointer;
             background-color: #f8f8f8;
-            font-size: 16px;
+            font-size: 14px; /* 기존 16px에서 줄임 */
         }
         .button-group button.selected {
             background-color: #2a9d8f;
@@ -65,14 +65,14 @@
         }
         button[type="submit"] {
             width: 100%;
-            padding: 12px;
+            padding: 10px; /* 기존 12px에서 줄임 */
             background-color: #2a9d8f;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px; /* 기존 8px에서 줄임 */
+            font-size: 14px; /* 기존 16px에서 줄임 */
             cursor: pointer;
-            margin-top: 16px;
+            margin-top: 12px; /* 기존 16px에서 줄임 */
             transition: background-color 0.3s;
         }
         button[type="submit"]:hover {
@@ -112,6 +112,10 @@
             <!-- Location (Content4) -->
             <label for="content4">장소</label>
             <input type="text" id="content4" name="content4" placeholder="위치를 입력하세요" required>
+
+            <!-- Image Upload -->
+            <label for="image">상품 이미지</label>
+            <input type="file" id="image" name="image">
 
             <!-- Submit -->
             <button type="submit">게시글 저장</button>

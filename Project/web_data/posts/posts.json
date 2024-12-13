@@ -1,29 +1,12 @@
 [
     {
-        "user_id": "read1823",
-        "title": "김서영 노트'북' 팝니다",
-        "content1": "노트BOOK",
-        "content2": "4000",
-        "content3": "나쁨",
-        "content4": "7-207호",
-        "id": 3
-    },
-    {
-        "user_id": "jh0328",
-        "title": "SW개발환경 리눅스 책 팔아요(커피 잔뜩 쏟음)",
-        "content1": "이것이 우분투 리눅스다",
-        "content2": "3000",
-        "content3": "나쁨",
-        "content4": "7-222호 문 앞",
-        "id": 2
-    },
-    {
         "user_id": "seoyoung0627",
-        "title": "의사소통 기초 글쓰기 거의 새 책 판매합니다",
-        "content1": "의사소통 기초 글쓰기",
-        "content2": "10000",
-        "content3": "좋음",
-        "content4": "ttt커피",
+        "title": "학교를 팝니다 제발 사주세요",
+        "content1": "울산대학교",
+        "content2": "1000",
+        "content3": "나쁨",
+        "content4": "울산광역시 남구 무거동",
+        "image": "default.png",
         "id": 1
     }
 ]

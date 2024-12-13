@@ -5,13 +5,32 @@ import subprocess
 import socket
 from multiprocessing import Process
 
+from werkzeug.utils import secure_filename
+
 app = Flask(__name__, template_folder=os.path.expanduser('~/Project/Templates'))
 app.secret_key = 'your_secret_key'  # Required for flashing messages
+
+
 
 # Paths for saving user and post data
 USER_DATA_FILE = os.path.expanduser("~/Project/web_data/users/users.json")
 POST_DATA_FILE = os.path.expanduser("~/Project/web_data/posts/posts.json")
 CHAT_DATA_FILE = os.path.expanduser("~/Project/web_data/chats/chats.json")
+
+##################################################################
+
+# 이미지 업로드를 위한 폴더 경로
+UPLOAD_FOLDER = os.path.expanduser("~/Project/static/uplaods")
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+# 이미지 파일 확장자 제한
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+# 파일 확장자 확인 함수
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 ##################################################################
 
@@ -144,6 +163,19 @@ def create_post():
     content3 = request.form.get('content3')  # 책 상태
     content4 = request.form.get('content4')  # 위치
 
+    ####################################################################
+
+    # 이미지 처리
+    image = request.files.get('image')  # 파일 가져오기
+    image_filename = "default.png"  # 기본 이미지 파일명 설정
+    if image and allowed_file(image.filename):
+        # 이미지 파일명 안전하게 처리
+        image_filename = secure_filename(image.filename)
+        image.save(os.path.join(UPLOAD_FOLDER, image_filename))
+
+    ####################################################################
+
+
     if not user_id or not title or not content1 or not content2 or not content3 or not content4:
         flash("All fields are required!")
         return redirect(url_for('create_post_page'))
@@ -162,6 +194,7 @@ def create_post():
         "content2": content2,
         "content3": content3,
         "content4": content4,
+        "image": image_filename,  ######################################## 이미지 파일명 추가
         "id": len(posts) + 1  # 게시글 ID
     }
     posts.insert(0, new_post)  # 최신 글을 맨 앞에 추가
@@ -271,9 +304,9 @@ def create_room():
 
 #####################################################################################
 
-if is_port_in_use(5000):
-        print("5000번 포트가 이미 사용 중입니다. 프로세스를 종료합니다...")
-        terminate_process_on_port(5000)
+#if is_port_in_use(5000):
+        #print("5000번 포트가 이미 사용 중입니다. 프로세스를 종료합니다...")
+        #terminate_process_on_port(5000)
 
 #####################################################################################
 
@@ -283,6 +316,7 @@ if __name__ == "__main__":
     os.makedirs(os.path.dirname(USER_DATA_FILE), exist_ok=True)
     os.makedirs(os.path.dirname(POST_DATA_FILE), exist_ok=True)
     os.makedirs(os.path.dirname(CHAT_DATA_FILE), exist_ok=True)
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
     # Ensure the data files exist
     if not os.path.exists(USER_DATA_FILE):
@@ -296,6 +330,14 @@ if __name__ == "__main__":
     if not os.path.exists(CHAT_DATA_FILE):
         with open(CHAT_DATA_FILE, 'w') as f:
             json.dump({}, f, ensure_ascii=False, indent=4)
+    
+    ###################################################################
+    # Ensure the upload folder contains a placeholder file
+    placeholder_file = os.path.join(UPLOAD_FOLDER, ".placeholder")
+    if not os.path.exists(placeholder_file):
+        with open(placeholder_file, "w") as f:
+            f.write("")
+    ###################################################################
 
     server_process = Process(target=run_server)
     server_process.start()
