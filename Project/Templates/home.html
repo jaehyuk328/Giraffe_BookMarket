@@ -11,39 +11,55 @@
             height: 100vh;
             margin: 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            align-items: center; /* 수직 중앙 정렬 */
+            justify-content: center; /* 수평 중앙 정렬 */
+            padding-left: 0; /* 추가 여백 제거 */
+        }
+        .giraffe-image {
+            max-width: 1000px; /* 기린 이미지 크기를 키움 */
+            max-height: 1000px;
+            margin-right: 60px; /* 컨테이너와의 간격 증가 */
+        }
+        .welcome-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .welcome-message {
+            font-size: 50px; /* 문구 크기를 키움 */
+            font-weight: bold;
+            color: white; /* 문구를 흰색으로 유지 */
+            margin-bottom: 50px; /* 컨테이너와 간격 증가 */
+            text-align: left;
         }
         .container {
             display: flex;
-            align-items: center;
-            gap: 20px;
+            flex-direction: column;
+            align-items: flex-start;
             background: white;
-            padding: 20px;
+            padding: 30px; /* 컨테이너 내부 여백 증가 */
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-        .giraffe-image {
-            max-width: 150px;
-            max-height: 150px;
+            max-width: 600px; /* 컨테이너 박스 크기 증가 */
         }
         .login-section {
             text-align: left;
+            width: 100%;
         }
         h1 {
-            font-size: 24px;
+            font-size: 22px; /* 제목 크기 증가 */
             color: #4CAF50;
         }
         input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
+            width: calc(93%);
+            padding: 15px; /* 입력란 높이를 키움 */
+            margin: 15px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
         button {
             width: 100%;
-            padding: 10px;
+            padding: 15px; /* 버튼 크기를 키움 */
             background: #4CAF50;
             color: white;
             border: none;
@@ -56,26 +72,28 @@
         a {
             display: block;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 15px;
             color: #4CAF50;
             text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="/static/giraffe.png" alt="Giraffe" class="giraffe-image">
-        <div class="login-section">
-            <h1>Login</h1>
-            <form action="/login" method="POST">
-                <input type="text" name="username" placeholder="User ID" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-            <a href="/signup_page">Sign up</a>
+    <img src="/static/giraffe.png" alt="Giraffe" class="giraffe-image">
+    <div class="welcome-container">
+        <div class="welcome-message">Welcome to Giraffe A+ Market</div>
+        <div class="container">
+            <div class="login-section">
+                <h1>Login</h1>
+                <form action="/login" method="POST">
+                    <input type="text" name="username" placeholder="User ID" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+                <a href="/signup_page">Sign up</a>
+            </div>
         </div>
     </div>
 </body>
 </html>
-
 

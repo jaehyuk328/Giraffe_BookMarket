@@ -34,9 +34,8 @@
             text-align: center;
         }
         .product img {
-            width: 100%;
-            max-width: 300px;
-            height: auto;
+            width: 30px; /* 고정된 너비 */
+            height: 30px; /* 고정된 높이 */
             margin-bottom: 15px;
             border-radius: 12px;
         }
@@ -90,7 +89,7 @@
 <body>
     <div class="container">
         <h1>상품 상세</h1>
-        <img src="{{ url_for('static', filename='uploads/' + (post.image if post.image else 'default.png')) }}" alt="상품 이미지">
+        <img src="{{ url_for('static', filename='uploads/' + post.image) }}" alt="상품 이미지">
         <div class="product">
             <h2>{{ post.title }}</h2>
             <p>판매자: {{ post.user_id }}</p>
@@ -100,10 +99,11 @@
             <p class="price">₩{{ post.content2 }}</p>
         </div>
         <div class="actions">
-            <a href="/buy/{{ post.id }}" class="buy-btn">구매하기</a>
+            <a href="/buy/{{ post.post_id }}" class="buy-btn">구매하기</a>
             <a href="/posts" class="back-btn">목록으로 돌아가기</a>
         </div>
     </div>
 </body>
 </html>
+
 

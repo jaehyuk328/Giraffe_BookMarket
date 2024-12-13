@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, flash, jsonify
+from flask import Flask, session, request, render_template, redirect, url_for, flash, jsonify
 import os
 import json
 import subprocess
@@ -20,7 +20,7 @@ CHAT_DATA_FILE = os.path.expanduser("~/Project/web_data/chats/chats.json")
 ##################################################################
 
 # 이미지 업로드를 위한 폴더 경로
-UPLOAD_FOLDER = os.path.expanduser("~/Project/static/uplaods")
+UPLOAD_FOLDER = os.path.expanduser("~/Project/static/uploads")
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -119,7 +119,7 @@ def signup():
         flash("Username already exists!")
         return redirect(url_for('signup_page'))
 
-    users[username] = {"password": password, "major": major}
+    users[username] = {"user_id": username, "password": password, "major": major}
     save_user_data(users)
     flash("Registration successful! You can now log in.")
     return redirect(url_for('home'))
@@ -171,7 +171,13 @@ def create_post():
     if image and allowed_file(image.filename):
         # 이미지 파일명 안전하게 처리
         image_filename = secure_filename(image.filename)
-        image.save(os.path.join(UPLOAD_FOLDER, image_filename))
+        # 이미지 저장
+        try:
+            image.save(os.path.join(UPLOAD_FOLDER, image_filename))
+        except Exception as e:
+            print(f"이미지 저장 실패: {e}")
+            flash("이미지를 저장하는 데 문제가 발생했습니다.")
+            return redirect(url_for('create_post_page'))
 
     ####################################################################
 
@@ -195,7 +201,7 @@ def create_post():
         "content3": content3,
         "content4": content4,
         "image": image_filename,  ######################################## 이미지 파일명 추가
-        "id": len(posts) + 1  # 게시글 ID
+        "post_id": len(posts) + 1  # 게시글 ID
     }
     posts.insert(0, new_post)  # 최신 글을 맨 앞에 추가
 
@@ -224,29 +230,31 @@ def post_detail(post_id):
     else:
         posts = []
 
-    post = next((p for p in posts if p['id'] == post_id), None)
+    post = next((p for p in posts if p['post_id'] == post_id), None)
     if not post:
         flash("Post not found!")
         return redirect(url_for('get_posts'))
 
     return render_template('post.html', post=post)
 
+
 @app.route('/buy/<int:post_id>', methods=['GET'])
 def buy_post(post_id):
-    # post_id가 유효한지 확인
+    # id가 유효한지 확인
     if os.path.exists(POST_DATA_FILE):
         with open(POST_DATA_FILE, 'r') as f:
             posts = json.load(f)
     else:
         posts = []
 
-    post = next((p for p in posts if p['id'] == post_id), None)
+    post = next((p for p in posts if p['post_id'] == post_id), None)
     if not post:
         flash("게시글을 찾을 수 없습니다!")
         return redirect(url_for('get_posts'))
 
-    # 해당 post_id를 사용하여 채팅 페이지로 리다이렉트
+    # 해당 id를 사용하여 채팅 페이지로 리다이렉트
     return redirect(url_for('chat', post_id=post_id))
+
 
 @app.route('/chat/post/<int:post_id>', methods=['GET'])
 def chat(post_id):
@@ -256,13 +264,12 @@ def chat(post_id):
     else:
         posts = []
 
-    post = next((p for p in posts if p['id'] == post_id), None)
+    post = next((p for p in posts if p['post_id'] == post_id), None)
     if not post:
         flash("Post not found!")
         return redirect(url_for('get_posts'))
 
     return render_template('chat.html', post=post)
-
 
 @app.route('/chat/room/<room_id>', methods=['GET', 'POST'])
 def chat_room(room_id):
@@ -285,7 +292,6 @@ def chat_room(room_id):
         return jsonify({"success": True, "message": "Message sent.", "messages": chat_data[room_id]}), 200
 
     return render_template('chat.html', room_id=room_id, messages=chat_data.get(room_id, []))
-
 
 @app.route('/create_room', methods=['POST'])
 def create_room():

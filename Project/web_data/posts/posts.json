@@ -1,12 +1,32 @@
 [
     {
-        "user_id": "seoyoung0627",
-        "title": "학교를 팝니다 제발 사주세요",
-        "content1": "울산대학교",
-        "content2": "1000",
-        "content3": "나쁨",
+        "user_id": "kim",
+        "title": "영커뮤 책 진짜 한 번도 안 사용했어요",
+        "content1": "Evolve 2",
+        "content2": "7000",
+        "content3": "좋음",
         "content4": "울산광역시 남구 무거동",
         "image": "default.png",
-        "id": 1
+        "post_id": 3
+    },
+    {
+        "user_id": "jh0328",
+        "title": "일반 물리학 책 팝니다(커피 잔뜩 쏟음)",
+        "content1": "핵심 대학 물리학",
+        "content2": "3000",
+        "content3": "나쁨",
+        "content4": "7-207호",
+        "image": "default.png",
+        "post_id": 2
+    },
+    {
+        "user_id": "seoyoung0627",
+        "title": "의사소통과 기초 글쓰기 거의 새 책 팔아요",
+        "content1": "의사소통과 기초 글쓰기",
+        "content2": "10000",
+        "content3": "좋음",
+        "content4": "ttt커피",
+        "image": "default.png",
+        "post_id": 1
     }
 ]
